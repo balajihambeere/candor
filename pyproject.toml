@@ -1,7 +1,18 @@
 [project]
 name = "candor"
 version = "0.1.0"
-description = "Candor: a Decide/Trace/Justify/Disclose engine for verified, disclosed AI decision explanations"
+description = "A Decide/Trace/Justify/Disclose engine for verified, disclosed AI decision explanations — turns a correct-but-unexplainable automated decision into a fast, checkable, honestly-delivered reason."
+keywords = [
+    "ai-explainability",
+    "decision-transparency",
+    "llm",
+    "anthropic",
+    "claude",
+    "fastapi",
+    "trust-and-safety",
+    "audit-trail",
+    "counterfactual-explanation",
+]
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",
@@ -12,7 +23,6 @@ dependencies = [
     "pydantic>=2.9",
     "pydantic-settings>=2.5",
     "anthropic>=0.39",
-    "jinja2>=3.1",
     "python-multipart>=0.0.12",
     "structlog>=24.4",
     "tenacity>=9.0",

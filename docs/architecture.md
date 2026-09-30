@@ -30,8 +30,21 @@
                     │                                    linked via  │
                     │                                 reopen_requests│
                     │                                                │
-                    │  /dashboard/*  (HTTP Basic) ──▶ same DB, same  │
-                    │                                  service layer │
+                    │  /v1/review-queue, /v1/disclosures  ──▶ reads  │
+                    │  used by the dashboard below                  │
+                    └─────────────────────────────────────────────┘
+                                        ▲
+                                        │ server-side fetch/POST,
+                                        │ CANDOR_API_KEY attached to writes
+                                        │ (never sent to the browser)
+                    ┌─────────────────────────────────────────────┐
+                    │            Next.js dashboard (apps/dashboard) │
+                    │  Server Components: review queue, decision   │
+                    │  detail, disclosure ledger (reads)            │
+                    │  Server Actions: resolve/disclose/reopen      │
+                    │  (writes) — plain HTML forms, no client JS    │
+                    │  Signed session cookie gates every route      │
+                    │  except /login (separate from CANDOR_API_KEY) │
                     └─────────────────────────────────────────────┘
 ```
 
@@ -45,6 +58,15 @@ the stages apart let each one drift from what the others had actually
 verified. A single Python process with three plain function calls
 (`decide()` → `trace()` → `justify()`) keeps that handoff a type, not a
 network call or a queue message that can silently drop a field.
+
+The dashboard is a deliberate exception to that rule, not a contradiction of
+it: it's a different kind of boundary. Decide/Trace/Justify are three steps
+of *one* computation that must never drift apart. The dashboard is a
+*different consumer* of the finished result — a human looking at what the
+API already decided and verified — over a normal HTTP API, the same way any
+other caller (like Zuxpert's own services) would. Keeping it a separate
+Next.js process means the API key that guards write endpoints never has to
+leave the server side of that boundary and reach a browser.
 
 ## The engine is domain-agnostic; the domain is injected
 
@@ -131,6 +153,7 @@ original one it corrects).
 
 ## Deployment shape
 
-Two containers: `api` (this FastAPI app, serving both the JSON API and the
-server-rendered dashboard) and `db` (Postgres). See `docker-compose.yml` and
-`docs/operations.md`.
+Three containers: `db` (Postgres), `api` (the FastAPI app), and `web` (the
+Next.js dashboard, built with `output: "standalone"` for a small runtime
+image). `web` depends on `api`; nothing depends on `web`. See
+`docker-compose.yml` and `docs/operations.md`.

@@ -4,15 +4,20 @@
 
 ```bash
 cp .env.example .env
-# set ANTHROPIC_API_KEY, and change DASHBOARD_USERNAME/DASHBOARD_PASSWORD
-# and API_KEYS before deploying anywhere real — the defaults are dev-only.
+# set ANTHROPIC_API_KEY and API_KEYS
+
+cp apps/dashboard/.env.example apps/dashboard/.env
+# set DASHBOARD_USERNAME, DASHBOARD_PASSWORD, SESSION_SECRET, and
+# CANDOR_API_KEY (one of the backend's API_KEYS above)
+# — change all of these before deploying anywhere real, the defaults are dev-only.
 
 docker compose up --build -d
 ```
 
-This starts two containers:
+This starts three containers:
 - `db` — Postgres 16, with a named volume (`candor_pgdata`) so data survives restarts.
-- `api` — runs `alembic upgrade head` on startup, then serves the FastAPI app (API + dashboard) on port 8000.
+- `api` — runs `alembic upgrade head` on startup, then serves the FastAPI app on port 8000.
+- `web` — the Next.js dashboard, on port 3000, talking to `api` over the compose network.
 
 ## Environment variables
 
@@ -76,7 +81,8 @@ assumed without actually running it.
 |---|---|---|
 | `503` on `POST /v1/decisions` | `ANTHROPIC_API_KEY` unset | set it in `.env`, restart the `api` container |
 | `401` on any `/v1/*` write endpoint | missing/wrong `X-API-Key` header | check `API_KEYS` in `.env` matches what the caller sends |
-| `401` on `/dashboard/*` | wrong HTTP Basic credentials | check `DASHBOARD_USERNAME`/`DASHBOARD_PASSWORD` |
+| Dashboard redirects everything to `/login` | missing/expired session cookie, or `SESSION_SECRET` changed | log in again; a changed `SESSION_SECRET` invalidates every existing session |
+| Dashboard pages show a fetch error | `web`'s `CANDOR_API_BASE_URL` can't reach `api`, or `CANDOR_API_KEY` doesn't match one of the backend's `API_KEYS` | check `apps/dashboard/.env` against the backend's `.env` |
 | `409` on `POST /v1/decisions/{id}/disclose` | justification wasn't `verified` | resolve it in the review queue first, or pass `sentence_override` |
 | High `justify_faithfulness_failed` rate in the review queue | Claude's sentence is dropping a reason or hedging a number | check `packages/candor/checks.py`'s issues via the review queue detail — the failing check's specific reason is logged, not just pass/fail |
 | Migration fails on startup | Postgres not ready yet | `docker-compose.yml`'s `depends_on.db.condition: service_healthy` should prevent this; if it still happens, check `docker compose logs db` |

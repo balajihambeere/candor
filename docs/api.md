@@ -86,7 +86,8 @@ original case's features with the given overrides.
 ## `GET /v1/review-queue`
 
 Lists pending review items — decisions Trace couldn't verify or Justify
-couldn't produce a clean sentence for.
+couldn't produce a clean sentence for. Optional `?decision_id=<uuid>` query
+param filters to one decision.
 
 ## `POST /v1/review-queue/{id}/resolve`
 
@@ -128,6 +129,11 @@ justification with no override.
 ## `GET /v1/decisions/{id}/disclosures`
 
 Lists every disclosure recorded against a decision, most recent first.
+
+## `GET /v1/disclosures`
+
+The global disclosure ledger — every disclosure recorded across every
+decision, most recent first. Same shape as the per-decision list above.
 
 ## `POST /v1/decisions/{id}/reopen`
 

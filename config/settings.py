@@ -16,11 +16,6 @@ class Settings(BaseSettings):
     api_keys: str = "dev-local-key"
     """Comma-separated list of accepted API keys."""
 
-    dashboard_username: str = "ops"
-    dashboard_password: str = "change-me"
-    """HTTP Basic credentials for the human-facing review/disclosure dashboard.
-    Separate from api_keys: this gates a person, not a calling service."""
-
     rate_limit_per_minute: int = 120
 
     log_level: str = "INFO"

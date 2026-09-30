@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from apps.api.auth import require_api_key
@@ -26,8 +26,11 @@ def _to_response(item) -> dict:
 
 
 @router.get("", response_model=list[ReviewItemResponse])
-def list_pending(db: Session = Depends(get_db)):
-    return [_to_response(item) for item in list_review_queue(db, ReviewStatus.PENDING)]
+def list_pending(decision_id: uuid.UUID | None = Query(default=None), db: Session = Depends(get_db)):
+    items = list_review_queue(db, ReviewStatus.PENDING)
+    if decision_id is not None:
+        items = [item for item in items if item.decision_id == decision_id]
+    return [_to_response(item) for item in items]
 
 
 @router.post("/{item_id}/resolve", response_model=ReviewItemResponse, dependencies=[Depends(require_api_key)])

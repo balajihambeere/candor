@@ -54,8 +54,8 @@ docker compose up --build
 ```
 
 The API is at `http://localhost:8000` (docs at `/docs`), the dashboard at
-`http://localhost:8000/dashboard/review-queue` (HTTP Basic — see
-`DASHBOARD_USERNAME`/`DASHBOARD_PASSWORD` in `.env`).
+`http://localhost:3000` (login with `DASHBOARD_USERNAME`/`DASHBOARD_PASSWORD`
+from `apps/dashboard/.env` — see `apps/dashboard/.env.example`).
 
 ## Local development (without Docker)
 
@@ -87,14 +87,15 @@ Every automated test mocks the LLM client for determinism and cost — see
 
 ## Architecture
 
-Single Python service (FastAPI + Postgres), Claude used only for Justify.
-Full detail in `docs/architecture.md`.
+Python API service (FastAPI + Postgres, Claude used only for Justify) plus
+a separate Next.js dashboard that talks to it over HTTP. Full detail in
+`docs/architecture.md`.
 
 ```text
 packages/candor/    the engine: decide.py, trace.py, justify.py, checks.py, models.py
 domains/returns/    the example domain: rules, category catalog, justify metadata
 apps/api/           FastAPI app: routers, auth, rate limiting, observability
-apps/dashboard/     server-rendered review queue / decision detail / disclosure ledger
+apps/dashboard/     Next.js dashboard: review queue / decision detail / disclosure ledger
 database/           SQLAlchemy models, Alembic migrations, repository functions
 tests/               unit / integration / golden
 docs/                architecture, API reference, concept reference, operations
@@ -107,8 +108,8 @@ docs/                architecture, API reference, concept reference, operations
 | API | Python + FastAPI | async-friendly, good fit for the LLM-orchestration step in Justify |
 | Database | Postgres + SQLAlchemy + Alembic | real persistence + migrations — Decide/Trace/Justify/Disclose records are never in-memory |
 | LLM | Anthropic Claude, Justify only | Anthropic's own published faithfulness research motivates keeping Decide and Trace deliberately deterministic |
-| Dashboard | Jinja2, server-rendered | "minimal dashboard," single-language stack, no separate JS build |
-| Auth | API key (write endpoints) + HTTP Basic (dashboard) | machine-to-machine service vs. a human-facing internal tool are different trust boundaries |
+| Dashboard | Next.js (App Router) + TypeScript + Tailwind CSS | Server Components for reads, Server Actions for writes — no separate REST client layer, no API key exposed to the browser |
+| Auth | API key (backend write endpoints) + signed session cookie (dashboard login) | machine-to-machine service vs. a human-facing internal tool are different trust boundaries |
 | Observability | structlog (JSON logs) + prometheus-client (`/metrics`) | enough to operate this without a bigger stack than a reference implementation warrants |
 
 ## Environment variables

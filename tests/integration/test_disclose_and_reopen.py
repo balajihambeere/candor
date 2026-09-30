@@ -140,3 +140,17 @@ def test_reopen_on_missing_decision_returns_404(client):
         json={"new_evidence": {}},
     )
     assert response.status_code == 404
+
+
+def test_global_disclosure_ledger_lists_across_decisions(client):
+    decision = _create_reema_decision(client)
+    client.post(
+        f"/v1/decisions/{decision['id']}/disclose",
+        json={"channel": "call", "disclosed_by": "uttara", "delay_owned": True},
+    )
+
+    ledger = client.get("/v1/disclosures")
+    assert ledger.status_code == 200
+    matching = [d for d in ledger.json() if d["decision_id"] == decision["id"]]
+    assert len(matching) == 1
+    assert matching[0]["disclosed_by"] == "uttara"

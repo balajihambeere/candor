@@ -204,3 +204,31 @@ def test_failed_review_case_appears_in_review_queue_and_resolves(client):
         json={"assigned_to": "uttara", "resolution_notes": "already done"},
     )
     assert again.status_code == 409
+
+
+def test_review_queue_can_be_filtered_by_decision_id(client):
+    app.dependency_overrides[get_llm_client] = lambda: VagueLLMClient()
+
+    created = client.post(
+        "/v1/decisions",
+        json={
+            "domain": "returns",
+            "category": "defect_claim",
+            "features": {"days_since_delivery": 9, "defect_confidence": 0.61},
+        },
+    )
+    decision_id = created.json()["id"]
+
+    other = client.post(
+        "/v1/decisions",
+        json={
+            "domain": "returns",
+            "category": "footwear",
+            "features": {"days_since_delivery": 6, "wear_confidence": 0.94},
+        },
+    )
+    other_decision_id = other.json()["id"]
+
+    filtered = client.get(f"/v1/review-queue?decision_id={decision_id}").json()
+    assert all(item["decision_id"] == decision_id for item in filtered)
+    assert not any(item["decision_id"] == other_decision_id for item in filtered)
