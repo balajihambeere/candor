@@ -57,6 +57,21 @@ The API is at `http://localhost:8000` (docs at `/docs`), the dashboard at
 `http://localhost:3000` (login with `DASHBOARD_USERNAME`/`DASHBOARD_PASSWORD`
 from `apps/dashboard/.env` — see `apps/dashboard/.env.example`).
 
+## Dashboard
+
+<p align="center">
+  <img src="docs/screenshots/overview.jpg" width="49%" alt="Overview page showing total decisions, pending review, disclosed count, and approval rate" />
+  <img src="docs/screenshots/decision-detail.jpg" width="49%" alt="Decision detail page showing the Decide, Trace, and Justify stages for a denied return" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/all-decisions.jpg" width="49%" alt="All Decisions page listing every case the pipeline has decided, paginated" />
+  <img src="docs/screenshots/review-queue.jpg" width="49%" alt="Review Queue page, empty state shown when nothing needs human attention" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/disclosure-ledger.jpg" width="49%" alt="Disclosure Ledger page listing every explanation given to a customer" />
+  <img src="docs/screenshots/login.jpg" width="49%" alt="Dashboard login page" />
+</p>
+
 ## Local development (without Docker)
 
 ```bash
