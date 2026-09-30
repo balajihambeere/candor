@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Disclosure Ledger · Candor{% endblock %}
+{% block content %}
+<h1>Disclosure Ledger</h1>
+<p class="muted">
+  Every explanation given, to whom, when, and whether it held up — the
+  record Uttara started keeping the first time it mattered, meant to
+  outlast any one call by years.
+</p>
+
+{% if disclosures %}
+<table>
+  <tr><th>Decision</th><th>Channel</th><th>By</th><th>When</th><th>Delay owned</th><th>Held up</th></tr>
+  {% for d in disclosures %}
+  <tr>
+    <td><a href="/dashboard/decisions/{{ d.decision_id }}"><code>{{ d.decision_id }}</code></a></td>
+    <td>{{ d.channel.value }}</td>
+    <td>{{ d.disclosed_by }}</td>
+    <td class="muted">{{ d.disclosed_at }}</td>
+    <td>{{ "yes" if d.delay_owned else "no" }}</td>
+    <td>{{ "yes" if d.held_up else ("no" if d.held_up is not none else "—") }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No disclosures logged yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Decision {{ decision.id }} · Candor{% endblock %}
+{% block content %}
+<h1>Decision <code>{{ decision.id }}</code></h1>
+<p>
+  <span class="badge badge-{{ decision.verdict }}">{{ decision.verdict }}</span>
+  <span class="muted">domain={{ decision.case.domain }} · category={{ decision.case.category }} · {{ decision.created_at }}</span>
+</p>
+
+<div class="card">
+  <h2>Decide — the record</h2>
+  <table>
+    <tr><th>Rule</th><th>Evaluated value</th><th>Threshold</th><th>Comparator</th><th>Passed</th></tr>
+    {% for r in decision.reasons %}
+    <tr>
+      <td><code>{{ r.rule_id }}</code></td>
+      <td>{{ r.evaluated_value }}</td>
+      <td>{{ r.threshold }}</td>
+      <td>{{ r.comparator }}</td>
+      <td>{{ "yes" if r.passed else "no" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>Trace — verification</h2>
+  <p>
+    Status: <span class="badge badge-{{ trace_result.verification_status.value }}">{{ trace_result.verification_status.value }}</span>
+  </p>
+  <p>Determinative reasons (independently sufficient, confirmed by counterfactual replay):</p>
+  <ul>
+    {% for rule_id in trace_result.determinative_reasons %}<li><code>{{ rule_id }}</code></li>{% else %}<li class="muted">none</li>{% endfor %}
+  </ul>
+  <details>
+    <summary class="muted">counterfactual log ({{ trace_result.counterfactual_log|length }} probes)</summary>
+    <pre>{{ trace_result.counterfactual_log }}</pre>
+  </details>
+</div>
+
+<div class="card">
+  <h2>Justify — the sentence</h2>
+  <p>Status: <span class="badge badge-{{ justification.status.value }}">{{ justification.status.value }}</span></p>
+  {% if justification.sentence %}
+  <p><strong>{{ justification.sentence }}</strong></p>
+  {% if justification.boundary_line %}<p class="muted">{{ justification.boundary_line }}</p>{% endif %}
+  {% endif %}
+  <p class="muted">
+    faithfulness: {{ "passed" if justification.faithfulness_check_passed else "FAILED" }} ·
+    plain language: {{ "passed" if justification.plain_language_check_passed else "FAILED" }}
+  </p>
+</div>
+
+{% if pending_review_items %}
+<div class="card">
+  <h2>Pending review</h2>
+  {% for item in pending_review_items %}
+  <p>Reason: <span class="badge badge-{{ item.status.value }}">{{ item.reason.value }}</span></p>
+  <form method="post" action="/dashboard/decisions/{{ decision.id }}/resolve-review/{{ item.id }}">
+    <label>Assigned to<input type="text" name="assigned_to" required></label>
+    <label>Resolution notes<textarea name="resolution_notes" rows="3" required></textarea></label>
+    <button type="submit">Mark resolved</button>
+  </form>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>Disclose</h2>
+  <p class="muted">
+    Discipline before you submit this: lead with the answer, own the delay
+    before you give it, and don't let a verified answer to "why" quietly
+    stand in for an answer to a different question the customer actually
+    asked (False Clarity).
+  </p>
+  <form method="post" action="/dashboard/decisions/{{ decision.id }}/disclose">
+    <label>Channel
+      <select name="channel">
+        <option value="call">call</option>
+        <option value="email">email</option>
+        <option value="chat">chat</option>
+      </select>
+    </label>
+    <label>Disclosed by<input type="text" name="disclosed_by" required></label>
+    <label><input type="checkbox" name="delay_owned" style="width:auto;display:inline;margin-right:0.4rem"> Delay was owned before giving the answer</label>
+    {% if justification.status.value != "verified" %}
+    <label>Sentence override (required — justification was not verified)<textarea name="sentence_override" rows="3" required></textarea></label>
+    {% else %}
+    <label>Sentence override (optional — leave blank to send the verified sentence above)<textarea name="sentence_override" rows="2"></textarea></label>
+    {% endif %}
+    <label>Customer response (optional)<textarea name="customer_response" rows="2"></textarea></label>
+    <button type="submit">Log disclosure</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Disclosure ledger for this decision</h2>
+  {% if disclosures %}
+  <table>
+    <tr><th>Channel</th><th>By</th><th>When</th><th>Sentence sent</th></tr>
+    {% for d in disclosures %}
+    <tr>
+      <td>{{ d.channel.value }}</td>
+      <td>{{ d.disclosed_by }}</td>
+      <td class="muted">{{ d.disclosed_at }}</td>
+      <td>{{ d.sentence_sent }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">Not yet disclosed to anyone.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Reopen with new evidence</h2>
+  <p class="muted">
+    New evidence on a decided case (a sharper photo, a corrected field) has
+    to re-enter the pipeline, not vanish into a thread. This runs a fresh
+    Decide → Trace → Justify pass and links it back here.
+  </p>
+  <form method="post" action="/dashboard/decisions/{{ decision.id }}/reopen">
+    <label>New evidence (JSON — only the fields that changed)<textarea name="new_evidence_json" rows="3" placeholder='{"defect_confidence": 0.89}' required></textarea></label>
+    <button type="submit">Reopen</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Candor{% endblock %}</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: -apple-system, system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    nav { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #8884; padding-bottom: 1rem; }
+    nav a { text-decoration: none; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #8884; vertical-align: top; }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 0.3rem; font-size: 0.85em; font-weight: 600; }
+    .badge-denied { background: #a4302233; color: #a43022; }
+    .badge-approved { background: #2a7a3822; color: #2a7a38; }
+    .badge-verified { background: #2a7a3822; color: #2a7a38; }
+    .badge-unresolved, .badge-failed_review, .badge-pending { background: #b8860b22; color: #b8860b; }
+    .badge-resolved { background: #4444; }
+    .card { border: 1px solid #8884; border-radius: 0.5rem; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .muted { opacity: 0.7; font-size: 0.9em; }
+    form.inline { display: inline; }
+    label { display: block; margin-top: 0.75rem; font-weight: 600; }
+    input, textarea, select { width: 100%; padding: 0.4rem; margin-top: 0.25rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer; }
+    .flash-error { background: #a4302222; border: 1px solid #a43022; padding: 0.75rem 1rem; border-radius: 0.4rem; margin-bottom: 1rem; }
+    .flash-ok { background: #2a7a3822; border: 1px solid #2a7a38; padding: 0.75rem 1rem; border-radius: 0.4rem; margin-bottom: 1rem; }
+    code { background: #8882; padding: 0.1rem 0.3rem; border-radius: 0.2rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/dashboard/review-queue">Review Queue</a>
+    <a href="/dashboard/disclosures">Disclosure Ledger</a>
+  </nav>
+  {% if error %}<div class="flash-error">{{ error }}</div>{% endif %}
+  {% if message %}<div class="flash-ok">{{ message }}</div>{% endif %}
+  {% block content %}{% endblock %}
+</body>
+</html>

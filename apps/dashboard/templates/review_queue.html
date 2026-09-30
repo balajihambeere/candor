@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Review Queue · Candor{% endblock %}
+{% block content %}
+<h1>Review Queue</h1>
+<p class="muted">
+  Every case here failed a check the Chain runs on itself — Trace couldn't
+  verify a reason, or Justify's sentence didn't pass faithfulness or plain-language.
+  Nothing here has been disclosed to anyone yet.
+</p>
+
+{% if items %}
+<table>
+  <tr><th>Decision</th><th>Reason</th><th>Created</th><th></th></tr>
+  {% for item in items %}
+  <tr>
+    <td><code>{{ item.decision_id }}</code></td>
+    <td><span class="badge badge-{{ item.status }}">{{ item.reason }}</span></td>
+    <td class="muted">{{ item.created_at }}</td>
+    <td><a href="/dashboard/decisions/{{ item.decision_id }}">Review →</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">Nothing pending. Every recent decision was Trace-verified and Justify-clean.</p>
+{% endif %}
+{% endblock %}
