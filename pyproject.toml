@@ -23,6 +23,7 @@ dependencies = [
     "pydantic>=2.9",
     "pydantic-settings>=2.5",
     "anthropic>=0.39",
+    "openai>=1.50",
     "python-multipart>=0.0.12",
     "structlog>=24.4",
     "tenacity>=9.0",

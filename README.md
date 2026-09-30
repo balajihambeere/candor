@@ -107,18 +107,22 @@ docs/                architecture, API reference, concept reference, operations
 |---|---|---|
 | API | Python + FastAPI | async-friendly, good fit for the LLM-orchestration step in Justify |
 | Database | Postgres + SQLAlchemy + Alembic | real persistence + migrations — Decide/Trace/Justify/Disclose records are never in-memory |
-| LLM | Anthropic Claude, Justify only | Anthropic's own published faithfulness research motivates keeping Decide and Trace deliberately deterministic |
+| LLM | Anthropic Claude or OpenAI (`LLM_PROVIDER`), Justify only | Anthropic's own published faithfulness research motivates keeping Decide and Trace deliberately deterministic, regardless of which provider Justify uses |
 | Dashboard | Next.js (App Router) + TypeScript + Tailwind CSS | Server Components for reads, Server Actions for writes — no separate REST client layer, no API key exposed to the browser |
 | Auth | API key (backend write endpoints) + signed session cookie (dashboard login) | machine-to-machine service vs. a human-facing internal tool are different trust boundaries |
 | Observability | structlog (JSON logs) + prometheus-client (`/metrics`) | enough to operate this without a bigger stack than a reference implementation warrants |
 
 ## Environment variables
 
-See `.env.example` for the full list with comments. The one that matters
-most: `ANTHROPIC_API_KEY` — without it, `POST /v1/decisions` and
+See `.env.example` for the full list with comments. The ones that matter
+most: `LLM_PROVIDER` (`anthropic` or `openai`, default `anthropic`) and that
+provider's API key — without it, `POST /v1/decisions` and
 `POST /v1/decisions/{id}/reopen` return `503` (Justify can't run). Everything
 else (Decide, Trace, the review queue, the disclosure ledger) works without
-it.
+it. Switching providers is a config change only — `packages/candor/llm.py`
+exposes both `AnthropicJustifyClient` and `OpenAIJustifyClient` behind the
+same `JustifyLLMClient` protocol, and `build_llm_client()` picks one from
+`LLM_PROVIDER`.
 
 ## Known limitations
 

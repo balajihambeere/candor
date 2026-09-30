@@ -7,6 +7,7 @@ never the raw case.
 from typing import Protocol
 
 from anthropic import Anthropic
+from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from config.settings import get_settings
@@ -51,3 +52,61 @@ class AnthropicJustifyClient:
             return "".join(block.text for block in response.content if block.type == "text").strip()
 
         return _call()
+
+
+class OpenAIJustifyClient:
+    """Same contract as AnthropicJustifyClient — swapped in when
+    LLM_PROVIDER=openai. Only this class and its Anthropic counterpart know
+    which provider is in use; Justify, Decide, and Trace are provider-agnostic.
+    """
+
+    def __init__(self) -> None:
+        settings = get_settings()
+        self._client = OpenAI(api_key=settings.openai_api_key, timeout=settings.openai_timeout_seconds)
+        self._model = settings.openai_model
+        self._max_retries = settings.openai_max_retries
+
+    def generate_sentence(self, reasons_payload: list[dict]) -> str:
+        return self._call_with_retry(reasons_payload)
+
+    def _call_with_retry(self, reasons_payload: list[dict]) -> str:
+        @retry(stop=stop_after_attempt(self._max_retries + 1), wait=wait_exponential(multiplier=1, max=8))
+        def _call() -> str:
+            response = self._client.chat.completions.create(
+                model=self._model,
+                max_tokens=300,
+                messages=[
+                    {"role": "system", "content": JUSTIFY_SYSTEM_PROMPT},
+                    {"role": "user", "content": str(reasons_payload)},
+                ],
+            )
+            return (response.choices[0].message.content or "").strip()
+
+        return _call()
+
+
+def build_llm_client() -> JustifyLLMClient:
+    """Picks the configured provider. Raises RuntimeError with a clear
+    message if that provider's API key isn't set — the same failure shape
+    regardless of which provider is chosen.
+    """
+    settings = get_settings()
+    provider = settings.llm_provider.lower()
+
+    if provider == "anthropic":
+        if not settings.anthropic_api_key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY is not set. Justify needs it to generate customer-facing sentences "
+                "(LLM_PROVIDER=anthropic)."
+            )
+        return AnthropicJustifyClient()
+
+    if provider == "openai":
+        if not settings.openai_api_key:
+            raise RuntimeError(
+                "OPENAI_API_KEY is not set. Justify needs it to generate customer-facing sentences "
+                "(LLM_PROVIDER=openai)."
+            )
+        return OpenAIJustifyClient()
+
+    raise RuntimeError(f"Unknown LLM_PROVIDER: {settings.llm_provider!r}. Expected 'anthropic' or 'openai'.")

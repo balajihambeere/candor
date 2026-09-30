@@ -30,8 +30,9 @@ app.include_router(review_queue.router)
 
 @app.exception_handler(RuntimeError)
 def runtime_error_handler(request: Request, exc: RuntimeError):
-    # Currently only raised by get_llm_client when ANTHROPIC_API_KEY is
-    # unset — a configuration problem, not a client error or a bug.
+    # Currently only raised by get_llm_client when the configured
+    # LLM_PROVIDER's API key is unset, or LLM_PROVIDER itself is invalid —
+    # a configuration problem, not a client error or a bug.
     return JSONResponse(status_code=503, content={"detail": str(exc)})
 
 

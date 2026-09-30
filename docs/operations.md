@@ -4,7 +4,7 @@
 
 ```bash
 cp .env.example .env
-# set ANTHROPIC_API_KEY and API_KEYS
+# set LLM_PROVIDER (anthropic or openai), that provider's API key, and API_KEYS
 
 cp apps/dashboard/.env.example apps/dashboard/.env
 # set DASHBOARD_USERNAME, DASHBOARD_PASSWORD, SESSION_SECRET, and
@@ -59,18 +59,24 @@ unlimited — they don't touch a paid external API.
 
 The automated test suite mocks the LLM client everywhere — it verifies the
 *pipeline's* correctness (rules, Trace's counterfactual logic, the
-faithfulness/plain-language checkers), not that Claude's actual output
-passes those checks. To verify that end to end:
+faithfulness/plain-language checkers), not that a real model's output
+passes those checks. To verify that end to end, with either provider:
 
 ```bash
+# Anthropic (LLM_PROVIDER=anthropic, the default)
 export ANTHROPIC_API_KEY=sk-ant-...
+
+# — or — OpenAI
+export LLM_PROVIDER=openai
+export OPENAI_API_KEY=sk-...
+
 curl -X POST localhost:8000/v1/decisions \
   -H "X-API-Key: dev-local-key" -H "Content-Type: application/json" \
   -d '{"domain":"returns","category":"defect_claim","features":{"days_since_delivery":9,"defect_confidence":0.61}}'
 ```
 
-Check the response's `justification.status` — `"verified"` means a real
-Claude call passed both checks on the first try; `"failed_review"` means it
+Check the response's `justification.status` — `"verified"` means the real
+model call passed both checks on the first try; `"failed_review"` means it
 didn't, and the case is now sitting in `GET /v1/review-queue` for a human,
 exactly as designed. Either outcome is useful signal; neither should be
 assumed without actually running it.
@@ -79,7 +85,8 @@ assumed without actually running it.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `503` on `POST /v1/decisions` | `ANTHROPIC_API_KEY` unset | set it in `.env`, restart the `api` container |
+| `503` on `POST /v1/decisions` | the configured provider's API key is unset (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`, depending on `LLM_PROVIDER`) | set it in `.env`, restart the `api` container |
+| `503` mentioning "Unknown LLM_PROVIDER" | `LLM_PROVIDER` isn't `anthropic` or `openai` | fix the value in `.env` |
 | `401` on any `/v1/*` write endpoint | missing/wrong `X-API-Key` header | check `API_KEYS` in `.env` matches what the caller sends |
 | Dashboard redirects everything to `/login` | missing/expired session cookie, or `SESSION_SECRET` changed | log in again; a changed `SESSION_SECRET` invalidates every existing session |
 | Dashboard pages show a fetch error | `web`'s `CANDOR_API_BASE_URL` can't reach `api`, or `CANDOR_API_KEY` doesn't match one of the backend's `API_KEYS` | check `apps/dashboard/.env` against the backend's `.env` |
