@@ -1,4 +1,4 @@
-"""Deterministic rule evaluators for zUdyog Fashion's return-eligibility
+"""Deterministic rule evaluators for Zuxpert Fashion's return-eligibility
 service. Every rule here is a plain comparison against an already-computed
 input (a date delta, a classifier confidence score handed in by the
 caller). Candor does not reimplement image classification; it wraps

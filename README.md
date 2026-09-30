@@ -16,7 +16,7 @@ one honest sentence, and keeps a permanent record of what was told to
 whom. Unverifiable or unclear cases are automatically held back for a
 human — nothing unchecked ever reaches a customer.
 
-**A production reference implementation**, worked through zUdyog
+**A production reference implementation**, worked through Zuxpert
 Fashion's return-eligibility system.
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
