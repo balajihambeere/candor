@@ -2,51 +2,17 @@
 
 ## System overview
 
-```text
-                    ┌─────────────────────────────────────────────┐
-                    │                 FastAPI app                  │
-                    │                                               │
-  caller ──POST──▶  │  /v1/decisions  ──▶  run_pipeline()           │
-  (e.g. Zuxpert's   │       │                  │                    │
-  return-eligibility│       │           ┌──────┴──────┐             │
-  service)          │       │           │             │             │
-                    │       │        decide()      trace()          │
-                    │       │      (deterministic)  (deterministic, │
-                    │       │                         counterfactual│
-                    │       │                         replay)       │
-                    │       │             │             │           │
-                    │       │             └──────┬──────┘           │
-                    │       │                 justify()             │
-                    │       │              (Claude call +           │
-                    │       │            faithfulness/plain-        │
-                    │       │              language checks)         │
-                    │       ▼                                       │
-                    │  persist to Postgres:                         │
-                    │  cases, decisions, trace_results,              │
-                    │  justifications, review_queue (if unverified)  │
-                    │                                                │
-                    │  /v1/decisions/{id}/disclose  ──▶ disclosures  │
-                    │  /v1/decisions/{id}/reopen    ──▶ fresh pass,  │
-                    │                                    linked via  │
-                    │                                 reopen_requests│
-                    │                                                │
-                    │  /v1/review-queue, /v1/disclosures  ──▶ reads  │
-                    │  used by the dashboard below                  │
-                    └─────────────────────────────────────────────┘
-                                        ▲
-                                        │ server-side fetch/POST,
-                                        │ CANDOR_API_KEY attached to writes
-                                        │ (never sent to the browser)
-                    ┌─────────────────────────────────────────────┐
-                    │            Next.js dashboard (apps/dashboard) │
-                    │  Server Components: review queue, decision   │
-                    │  detail, disclosure ledger (reads)            │
-                    │  Server Actions: resolve/disclose/reopen      │
-                    │  (writes) — plain HTML forms, no client JS    │
-                    │  Signed session cookie gates every route      │
-                    │  except /login (separate from CANDOR_API_KEY) │
-                    └─────────────────────────────────────────────┘
-```
+![System overview: a caller POSTs to the FastAPI app, which runs decide, trace, and justify, persists to Postgres, and routes unresolved or failed cases to a review queue; the Next.js dashboard reads and writes the same API over HTTP with a server-side API key](diagrams/system-overview.svg)
+
+A caller (e.g. Zuxpert's return-eligibility service) submits a case to
+`POST /v1/decisions`. The FastAPI app runs `decide()` and `trace()` —
+both deterministic — then `justify()`, the one step that calls an LLM
+(Claude or OpenAI) and checks its own output for faithfulness and plain
+language. Everything is persisted to Postgres; anything Trace can't
+resolve or Justify can't verify goes to the review queue instead of being
+disclosed. The Next.js dashboard is a separate process that reads and
+writes the same API over plain HTTP, with `CANDOR_API_KEY` attached
+server-side only — it never reaches the browser.
 
 ## Why one service, not several
 
@@ -152,6 +118,8 @@ See `database/models.py`. One table per pipeline artifact
 original one it corrects).
 
 ## Deployment shape
+
+![Deployment: docker-compose.yml runs three containers — db (Postgres), api (FastAPI/uvicorn), and web (Next.js standalone) — where web depends on api and api depends on db](diagrams/deployment.svg)
 
 Three containers: `db` (Postgres), `api` (the FastAPI app), and `web` (the
 Next.js dashboard, built with `output: "standalone"` for a small runtime

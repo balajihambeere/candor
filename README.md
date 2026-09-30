@@ -41,6 +41,8 @@ asked (**False Clarity**). Candor implements the four-stage fix:
    whether it held up — plus a reopen path so new evidence re-enters the
    pipeline instead of vanishing into a thread.
 
+![System overview: a caller POSTs to the FastAPI app, which runs decide, trace, and justify, persists to Postgres, and routes unresolved or failed cases to a review queue; the Next.js dashboard reads and writes the same API over HTTP with a server-side API key](docs/diagrams/system-overview.svg)
+
 See `docs/concept-reference.md` for exactly where each core concept lives in
 this codebase, and `docs/architecture.md` for the system design.
 

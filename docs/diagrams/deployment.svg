@@ -1,0 +1,79 @@
+<svg width="800" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+
+    <symbol id="icon-containers" viewBox="0 0 48 48">
+      <rect fill="#ED7100" x="4" y="4" width="40" height="40"></rect>
+      <rect stroke="#879196" stroke-width="2" x="1" y="1" width="46" height="46" fill="none"></rect>
+      <g transform="translate(10.000000, 10.000000)" fill="#FFFFFF">
+        <path d="M1,27 L26,27 L26,25 L1,25 L1,27 Z M2,24 L25,24 L25,15 L2,15 L2,24 Z M26,15 L26,24 L26.5,24 C26.776,24 27,24.224 27,24.5 L27,27.5 C27,27.776 26.776,28 26.5,28 L0.5,28 C0.224,28 0,27.776 0,27.5 L0,24.5 C0,24.224 0.224,24 0.5,24 L1,24 L1,15 L0.5,15 C0.224,15 0,14.776 0,14.5 L0,11.5 C0,11.224 0.224,11 0.5,11 L0.57,11 L9.741,5.26 L10.272,6.107 L2.455,11 L18,11 L18,12 L1,12 L1,14 L26,14 L26,12 L19,12 L19,11 L24.545,11 L16.728,6.107 L17.259,5.26 L26.43,11 L26.5,11 C26.776,11 27,11.224 27,11.5 L27,14.5 C27,14.776 26.776,15 26.5,15 L26,15 Z M13.5,6 C14.603,6 15.5,5.103 15.5,4 L14.5,4 C14.5,4.551 14.052,5 13.5,5 C12.948,5 12.5,4.551 12.5,4 C12.5,3.449 12.948,3 13.5,3 C13.776,3 14,2.776 14,2.5 L14,0 L13,0 L13,2.063 C12.139,2.286 11.5,3.07 11.5,4 C11.5,5.103 12.397,6 13.5,6 L13.5,6 Z M4,22 L5,22 L5,17 L4,17 L4,22 Z M7,22 L8,22 L8,17 L7,17 L7,22 Z M10,22 L11,22 L11,17 L10,17 L10,22 Z M22,22 L23,22 L23,17 L22,17 L22,22 Z M19,22 L20,22 L20,17 L19,17 L19,22 Z M16,22 L17,22 L17,17 L16,17 L16,22 Z M13,22 L14,22 L14,17 L13,17 L13,22 Z"></path>
+      </g>
+    </symbol>
+
+    <symbol id="icon-compute" viewBox="0 0 48 48">
+      <rect fill="#ED7100" x="4" y="4" width="40" height="40"></rect>
+      <rect stroke="#879196" stroke-width="2" x="1" y="1" width="46" height="46" fill="none"></rect>
+      <g transform="translate(10.000000, 10.000000)" fill="#FFFFFF">
+        <path d="M8,20 L20,20 L20,8 L8,8 L8,20 Z M20.5,7 L7.5,7 C7.224,7 7,7.224 7,7.5 L7,20.5 C7,20.776 7.224,21 7.5,21 L20.5,21 C20.776,21 21,20.776 21,20.5 L21,7.5 C21,7.224 20.776,7 20.5,7 L20.5,7 Z M24,9 L24,10 L24,12 L24,13 L24,15 L24,16 L24,18 L24,19 L24,21 L24,22 L24,24 L22,24 L21,24 L19,24 L18,24 L16,24 L15,24 L13,24 L12,24 L10,24 L9,24 L7,24 L6,24 L4,24 L4,22 L4,21 L4,19 L4,18 L4,16 L4,15 L4,13 L4,12 L4,10 L4,9 L4,7 L4,6 L4,4 L6,4 L7,4 L9,4 L10,4 L12,4 L13,4 L15,4 L16,4 L18,4 L19,4 L21,4 L22,4 L24,4 L24,6 L24,7 L24,9 Z M25,3.5 C25,3.224 24.776,3 24.5,3 L22,3 L22,0 L21,0 L21,3 L19,3 L19,0 L18,0 L18,3 L16,3 L16,0 L15,0 L15,3 L13,3 L13,0 L12,0 L12,3 L10,3 L10,0 L9,0 L9,3 L7,3 L7,0 L6,0 L6,3 L3.5,3 C3.224,3 3,3.224 3,3.5 L3,6 L0,6 L0,7 L3,7 L3,9 L0,9 L0,10 L3,10 L3,12 L0,12 L0,13 L3,13 L3,15 L0,15 L0,16 L3,16 L3,18 L0,18 L0,19 L3,19 L3,21 L0,21 L0,22 L3,22 L3,24.5 C3,24.776 3.224,25 3.5,25 L6,25 L6,28 L7,28 L7,25 L9,25 L9,28 L10,28 L10,25 L12,25 L12,28 L13,28 L13,25 L15,25 L15,28 L16,28 L16,25 L18,25 L18,28 L19,28 L19,25 L21,25 L21,28 L22,28 L22,25 L24.5,25 C24.776,25 25,24.776 25,24.5 L25,22 L28,22 L28,21 L25,21 L25,19 L28,19 L28,18 L25,18 L25,16 L28,16 L28,15 L25,15 L25,13 L28,13 L28,12 L25,12 L25,10 L28,10 L28,9 L25,9 L25,7 L28,7 L28,6 L25,6 L25,3.5 Z"></path>
+      </g>
+    </symbol>
+
+    <symbol id="icon-database2" viewBox="0 0 48 48">
+      <rect fill="#C925D1" x="4" y="4" width="40" height="40"></rect>
+      <rect stroke="#879196" stroke-width="2" x="1" y="1" width="46" height="46" fill="none"></rect>
+      <g transform="translate(14.000000, 10.000000)" fill="#FFFFFF">
+        <path d="M10,13.991 C4.696,13.991 1,12.411 1,10.993 L1,5.81 C2.729,7.239 6.442,7.996 10,7.996 C13.558,7.996 17.271,7.239 19,5.81 L19,10.993 C19,12.411 15.304,13.991 10,13.991 M10,20.864 C4.696,20.864 1,19.284 1,17.866 L1,12.806 C2.729,14.234 6.442,14.991 10,14.991 C13.558,14.991 17.271,14.234 19,12.806 L19,17.866 C19,19.284 15.304,20.864 10,20.864 M10,27 C4.696,27 1,25.421 1,24.003 L1,19.678 C2.729,21.107 6.442,21.864 10,21.864 C13.558,21.864 17.271,21.107 19,19.678 L19,24.003 C19,25.421 15.304,27 10,27 M10,1 C15.304,1 19,2.58 19,3.998 C19,5.416 15.304,6.996 10,6.996 C4.696,6.996 1,5.416 1,3.998 C1,2.58 4.696,1 10,1 M10,0 C5.152,0 0,1.401 0,3.998 L0,24.003 C0,26.599 5.152,28 10,28 C14.848,28 20,26.599 20,24.003 L20,3.998 C20,1.401 14.848,0 10,0"></path>
+      </g>
+    </symbol>
+
+    <symbol id="icon-web2" viewBox="0 0 48 48">
+      <rect fill="#DD344C" x="4" y="4" width="40" height="40"></rect>
+      <rect stroke="#879196" stroke-width="2" x="1" y="1" width="46" height="46" fill="none"></rect>
+      <g transform="translate(10.000000, 10.000000)" fill="#FFFFFF">
+        <path d="M20,25 L23,25 L23,24 L20,24 L20,25 Z M27,26.5 L27,23 L16,23 L16,26.5 C16,26.776 16.225,27 16.5,27 L26.5,27 C26.775,27 27,26.776 27,26.5 L27,26.5 Z M16,8.5 L16,22 L27,22 L27,8.5 C27,8.224 26.775,8 26.5,8 L16.5,8 C16.225,8 16,8.224 16,8.5 L16,8.5 Z M28,8.5 L28,26.5 C28,27.327 27.327,28 26.5,28 L16.5,28 C15.673,28 15,27.327 15,26.5 L15,8.5 C15,7.673 15.673,7 16.5,7 L26.5,7 C27.327,7 28,7.673 28,8.5 L28,8.5 Z M4,4 L16,4 L16,6 L17,6 L17,3.5 C17,3.224 16.776,3 16.5,3 L3.5,3 C3.224,3 3,3.224 3,3.5 L3,22.5 C3,22.776 3.224,23 3.5,23 L14,23 L14,22 L4,22 L4,4 Z M1.907,25 L14,25 L14,26 L1.907,26 C0.855,26 0,25.121 0,24.041 L0,1.959 C0,0.879 0.855,0 1.907,0 L18.093,0 C19.145,0 20,0.879 20,1.959 L20,6 L19,6 L19,1.959 C19,1.43 18.593,1 18.093,1 L1.907,1 C1.407,1 1,1.43 1,1.959 L1,24.041 C1,24.57 1.407,25 1.907,25 L1.907,25 Z"></path>
+      </g>
+    </symbol>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="300" fill="#ffffff" />
+
+  <!-- Compose boundary -->
+  <rect x="20" y="20" width="760" height="250" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" />
+  <use href="#icon-containers" x="36" y="34" width="30" height="30" />
+  <text x="74" y="55" font-size="13" font-weight="700" fill="#334155">docker-compose.yml</text>
+
+  <!-- db -->
+  <rect x="60" y="110" width="190" height="150" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+  <use href="#icon-database2" x="135" y="126" width="40" height="40" />
+  <text x="155" y="184" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">db</text>
+  <text x="155" y="202" text-anchor="middle" font-size="11" fill="#64748b">Postgres 16-alpine</text>
+  <text x="155" y="218" text-anchor="middle" font-size="11" fill="#64748b">candor / candor</text>
+  <text x="155" y="234" text-anchor="middle" font-size="11" fill="#64748b">5544 &#8594; 5432</text>
+
+  <!-- api -->
+  <rect x="305" y="110" width="190" height="150" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+  <use href="#icon-compute" x="380" y="126" width="40" height="40" />
+  <text x="400" y="184" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">api</text>
+  <text x="400" y="202" text-anchor="middle" font-size="11" fill="#64748b">FastAPI (uvicorn)</text>
+  <text x="400" y="218" text-anchor="middle" font-size="11" fill="#64748b">Decide &#183; Trace &#183; Justify</text>
+  <text x="400" y="234" text-anchor="middle" font-size="11" fill="#64748b">:8000</text>
+
+  <!-- web -->
+  <rect x="550" y="110" width="190" height="150" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
+  <use href="#icon-web2" x="625" y="126" width="40" height="40" />
+  <text x="645" y="184" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">web</text>
+  <text x="645" y="202" text-anchor="middle" font-size="11" fill="#64748b">Next.js (standalone)</text>
+  <text x="645" y="218" text-anchor="middle" font-size="11" fill="#64748b">dashboard</text>
+  <text x="645" y="234" text-anchor="middle" font-size="11" fill="#64748b">:3000</text>
+
+  <!-- depends_on arrows: web -> api -> db -->
+  <text x="522" y="170" text-anchor="middle" font-size="10" fill="#475569">depends_on</text>
+  <path d="M548,185 L497,185" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)" fill="none" />
+
+  <text x="277" y="170" text-anchor="middle" font-size="10" fill="#475569">depends_on</text>
+  <path d="M303,185 L252,185" stroke="#64748b" stroke-width="2" marker-end="url(#arrow2)" fill="none" />
+
+  <text x="400" y="290" text-anchor="middle" font-size="11" fill="#64748b">web depends on api; nothing depends on web</text>
+</svg>
