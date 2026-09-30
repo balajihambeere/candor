@@ -97,6 +97,44 @@ def test_create_and_read_reema_decision(client):
     assert read_back.json()["id"] == decision_id
 
 
+def test_list_decisions_returns_newest_first_with_pagination(client):
+    for days in (9, 3, 20):
+        response = client.post(
+            "/v1/decisions",
+            json={"domain": "returns", "category": "general", "features": {"days_since_delivery": days}},
+        )
+        assert response.status_code == 201, response.text
+
+    listing = client.get("/v1/decisions", params={"limit": 2, "offset": 0})
+    assert listing.status_code == 200
+    body = listing.json()
+    assert body["total"] >= 3
+    assert body["limit"] == 2
+    assert len(body["items"]) == 2
+    assert body["items"][0]["created_at"] >= body["items"][1]["created_at"]
+    for item in body["items"]:
+        assert item["domain"] == "returns"
+        assert "verdict" in item and "needs_review" in item
+
+
+def test_stats_summary_counts_match_created_decisions(client):
+    before = client.get("/v1/stats/summary").json()
+
+    client.post(
+        "/v1/decisions",
+        json={"domain": "returns", "category": "general", "features": {"days_since_delivery": 2}},
+    )
+    client.post(
+        "/v1/decisions",
+        json={"domain": "returns", "category": "general", "features": {"days_since_delivery": 9}},
+    )
+
+    after = client.get("/v1/stats/summary").json()
+    assert after["total_decisions"] == before["total_decisions"] + 2
+    assert after["approved"] == before["approved"] + 1
+    assert after["denied"] == before["denied"] + 1
+
+
 def test_missing_decision_returns_404(client):
     response = client.get("/v1/decisions/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404

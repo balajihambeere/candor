@@ -2,6 +2,18 @@ from database.models import Decision
 from packages.candor.models import JustificationStatus as PyJustificationStatus
 
 
+def decision_to_summary_dict(decision: Decision) -> dict:
+    needs_review = any(item.status.value == "pending" for item in decision.review_items)
+    return {
+        "id": decision.id,
+        "domain": decision.case.domain,
+        "category": decision.case.category,
+        "verdict": decision.verdict,
+        "needs_review": needs_review,
+        "created_at": decision.created_at,
+    }
+
+
 def decision_to_response_dict(decision: Decision) -> dict:
     trace_result = decision.trace_result
     justification = decision.justification

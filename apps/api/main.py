@@ -6,7 +6,7 @@ from sqlalchemy import text
 
 from apps.api.observability import install_observability
 from apps.api.rate_limit import limiter
-from apps.api.routers import decisions, disclosures, ledger, review_queue
+from apps.api.routers import decisions, disclosures, ledger, review_queue, stats
 from database.session import get_engine
 
 app = FastAPI(
@@ -26,6 +26,7 @@ app.include_router(decisions.router)
 app.include_router(disclosures.router)
 app.include_router(ledger.router)
 app.include_router(review_queue.router)
+app.include_router(stats.router)
 
 
 @app.exception_handler(RuntimeError)

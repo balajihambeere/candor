@@ -92,6 +92,33 @@ def get_decision(db: Session, decision_id: uuid.UUID) -> Decision | None:
     return db.get(Decision, decision_id)
 
 
+def get_summary_stats(db: Session) -> dict:
+    total = db.query(Decision).count()
+    approved = db.query(Decision).filter(Decision.verdict == "approved").count()
+    denied = db.query(Decision).filter(Decision.verdict == "denied").count()
+    pending_review = db.query(ReviewItem).filter(ReviewItem.status == ReviewStatus.PENDING).count()
+    disclosed_decisions = db.query(Disclosure.decision_id).distinct().count()
+    return {
+        "total_decisions": total,
+        "approved": approved,
+        "denied": denied,
+        "pending_review": pending_review,
+        "disclosed_decisions": disclosed_decisions,
+    }
+
+
+def list_decisions(db: Session, limit: int = 50, offset: int = 0) -> tuple[list[Decision], int]:
+    total = db.query(Decision).count()
+    items = (
+        db.query(Decision)
+        .order_by(Decision.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return items, total
+
+
 def list_review_queue(db: Session, status: ReviewStatus = ReviewStatus.PENDING) -> list[ReviewItem]:
     return db.query(ReviewItem).filter(ReviewItem.status == status).order_by(ReviewItem.created_at.asc()).all()
 

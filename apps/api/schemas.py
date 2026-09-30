@@ -43,6 +43,30 @@ class DecisionResponse(BaseModel):
     created_at: datetime
 
 
+class DecisionSummaryResponse(BaseModel):
+    id: uuid.UUID
+    domain: str
+    category: str
+    verdict: str
+    needs_review: bool
+    created_at: datetime
+
+
+class DecisionListResponse(BaseModel):
+    items: list[DecisionSummaryResponse]
+    total: int
+    limit: int
+    offset: int
+
+
+class StatsSummaryResponse(BaseModel):
+    total_decisions: int
+    approved: int
+    denied: int
+    pending_review: int
+    disclosed_decisions: int
+
+
 class CounterfactualRequest(BaseModel):
     feature_overrides: dict = Field(
         examples=[{"days_since_delivery": 6, "defect_confidence": 0.89}],

@@ -10,11 +10,12 @@ from apps.api.schemas import (
     CounterfactualRequest,
     CounterfactualResponse,
     DecisionCreateRequest,
+    DecisionListResponse,
     DecisionResponse,
     ReasonSchema,
 )
-from apps.api.serializers import decision_to_response_dict
-from database.repository import create_case, get_decision, persist_pipeline_result
+from apps.api.serializers import decision_to_response_dict, decision_to_summary_dict
+from database.repository import create_case, get_decision, list_decisions, persist_pipeline_result
 from domains.registry import UnknownDomainError, get_domain
 from packages.candor.decide import decide
 from packages.candor.llm import JustifyLLMClient
@@ -49,6 +50,23 @@ def create_decision(
     db.refresh(decision)
 
     return decision_to_response_dict(decision)
+
+
+@router.get("", response_model=DecisionListResponse)
+def list_all_decisions(
+    limit: int = 50,
+    offset: int = 0,
+    db: Session = Depends(get_db),
+):
+    limit = max(1, min(limit, 200))
+    offset = max(0, offset)
+    decisions, total = list_decisions(db, limit=limit, offset=offset)
+    return {
+        "items": [decision_to_summary_dict(d) for d in decisions],
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/{decision_id}", response_model=DecisionResponse)
