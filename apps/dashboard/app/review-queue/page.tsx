@@ -15,8 +15,8 @@ export default async function ReviewQueuePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Review Queue</h1>
-        <p className="mt-1.5 max-w-2xl text-sm text-slate-500">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Review Queue</h1>
+        <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
           Every case here failed a check the pipeline runs on itself — Trace couldn&apos;t verify a
           reason, or Justify&apos;s sentence didn&apos;t pass faithfulness or plain language. Nothing here
           has been disclosed to anyone yet.
@@ -51,11 +51,11 @@ export default async function ReviewQueuePage() {
                   <td>
                     <Badge tone="warn">{item.reason}</Badge>
                   </td>
-                  <td className="text-xs text-slate-500">{new Date(item.created_at).toLocaleString()}</td>
+                  <td className="text-xs text-slate-500 dark:text-slate-400">{new Date(item.created_at).toLocaleString()}</td>
                   <td>
                     <Link
                       href={`/decisions/${item.decision_id}`}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                     >
                       Review
                       <ArrowRightIcon className="h-3.5 w-3.5" />

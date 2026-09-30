@@ -35,6 +35,30 @@ export type Decision = {
   created_at: string;
 };
 
+export type StatsSummary = {
+  total_decisions: number;
+  approved: number;
+  denied: number;
+  pending_review: number;
+  disclosed_decisions: number;
+};
+
+export type DecisionSummary = {
+  id: string;
+  domain: string;
+  category: string;
+  verdict: "approved" | "denied";
+  needs_review: boolean;
+  created_at: string;
+};
+
+export type DecisionList = {
+  items: DecisionSummary[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
 export type ReviewItem = {
   id: string;
   decision_id: string;

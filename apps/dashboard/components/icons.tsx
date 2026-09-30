@@ -48,6 +48,34 @@ export function LedgerIcon({ className = "h-4.5 w-4.5" }: { className?: string }
   );
 }
 
+export function HomeIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M3 9.5 10 3l7 6.5M5 8v8a1 1 0 0 0 1 1h3v-5h2v5h3a1 1 0 0 0 1-1V8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function DecisionsIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M10 2.5 3 6v7.2c0 .35.19.67.5.83L10 17.5l6.5-3.47c.31-.16.5-.48.5-.83V6l-7-3.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path d="M3.3 6.2 10 9.8l6.7-3.6M10 9.8v7.6" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function LogoutIcon({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -84,6 +112,33 @@ export function LedgerEmptyIcon({ className = "h-12 w-12" }: { className?: strin
     <svg viewBox="0 0 48 48" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
       <rect x="10" y="6" width="28" height="36" rx="3" stroke="currentColor" strokeWidth="2" />
       <path d="M16 16h16M16 23h16M16 30h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function SunIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="10" cy="10" r="3.5" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M10 2.5v2M10 15.5v2M17.5 10h-2M4.5 10h-2M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4M15.3 15.3l-1.4-1.4M6.1 6.1 4.7 4.7"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function MoonIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M17 11.3A7 7 0 1 1 8.7 3a5.5 5.5 0 0 0 8.3 8.3Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

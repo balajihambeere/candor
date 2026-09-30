@@ -5,6 +5,7 @@ import { logout } from "@/lib/actions";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 import { LogoMark, LogoutIcon } from "@/components/icons";
 import { SidebarNav } from "@/components/SidebarNav";
+import { THEME_INIT_SCRIPT, ThemeToggle } from "@/components/ThemeToggle";
 
 import "./globals.css";
 
@@ -19,20 +20,28 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   if (!isLoggedIn) {
     return (
-      <html lang="en" className="h-full">
-        <body className="min-h-full bg-slate-50 text-slate-900 antialiased">{children}</body>
+      <html lang="en" className="h-full" suppressHydrationWarning>
+        <head>
+          <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        </head>
+        <body className="min-h-full bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+          {children}
+        </body>
       </html>
     );
   }
 
   return (
-    <html lang="en" className="h-full">
-      <body className="flex h-full bg-slate-50 text-slate-900 antialiased">
-        <aside className="flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="flex h-full bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+        <aside className="flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center gap-2.5 px-5 py-5">
             <LogoMark className="h-8 w-8" />
             <div className="leading-tight">
-              <div className="text-[15px] font-bold tracking-tight text-slate-900">Candor</div>
+              <div className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-slate-100">Candor</div>
               <div className="text-[11px] font-medium text-slate-400">Decision Ops</div>
             </div>
           </div>
@@ -44,11 +53,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <SidebarNav />
           </div>
 
-          <div className="border-t border-slate-200 p-3">
+          <div className="space-y-1 border-t border-slate-200 p-3 dark:border-slate-800">
+            <ThemeToggle />
             <form action={logout}>
               <button
                 type="submit"
-                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
               >
                 <LogoutIcon className="h-4 w-4" />
                 Log out
