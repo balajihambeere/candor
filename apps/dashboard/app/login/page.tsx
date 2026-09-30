@@ -1,4 +1,5 @@
 import { login } from "@/lib/actions";
+import { LogoMark } from "@/components/icons";
 
 export default async function LoginPage({
   searchParams,
@@ -8,49 +9,57 @@ export default async function LoginPage({
   const { error } = await searchParams;
 
   return (
-    <div className="mx-auto mt-20 max-w-sm">
-      <h1 className="mb-1 text-2xl font-bold">Candor</h1>
-      <p className="mb-6 text-sm text-slate-500">Review queue &amp; disclosure ledger</p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <LogoMark className="h-11 w-11" />
+          <h1 className="mt-4 text-xl font-bold tracking-tight text-slate-900">Candor</h1>
+          <p className="mt-1 text-sm text-slate-500">Sign in to the decision ops dashboard</p>
+        </div>
 
-      {error && (
-        <div className="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {error}
+          </div>
+        )}
 
-      <form action={login} className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-slate-700">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            required
-            autoFocus
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+        <form
+          action={login}
+          className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
         >
-          Log in
-        </button>
-      </form>
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-slate-700">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              autoFocus
+              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
+          >
+            Log in
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

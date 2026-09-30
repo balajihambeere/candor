@@ -39,15 +39,18 @@ export default async function DecisionDetailPage({
     <div className="space-y-6">
       <Flash error={error} message={message} />
 
-      <div>
-        <h1 className="font-mono text-lg font-bold">{decision.id}</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          <Badge tone={verdictTone(decision.verdict)}>{decision.verdict}</Badge>{" "}
-          <span className="ml-2">{new Date(decision.created_at).toLocaleString()}</span>
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Decision</p>
+          <h1 className="font-mono text-lg font-bold text-slate-900">{decision.id}</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge tone={verdictTone(decision.verdict)}>{decision.verdict}</Badge>
+          <span className="text-sm text-slate-500">{new Date(decision.created_at).toLocaleString()}</span>
+        </div>
       </div>
 
-      <Card title="Decide — the record">
+      <Card title="Decide" subtitle="The structured record captured at decision time">
         <table>
           <thead>
             <tr>
@@ -65,64 +68,72 @@ export default async function DecisionDetailPage({
                 <td>{String(r.evaluated_value)}</td>
                 <td>{String(r.threshold)}</td>
                 <td>{r.comparator}</td>
-                <td>{r.passed ? "yes" : "no"}</td>
+                <td>
+                  <Badge tone={r.passed ? "good" : "bad"}>{r.passed ? "Passed" : "Failed"}</Badge>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </Card>
 
-      <Card title="Trace — verification">
-        <p className="mb-3 text-sm">
-          Status: <Badge tone={statusTone(decision.trace.verification_status)}>{decision.trace.verification_status}</Badge>
-        </p>
-        <p className="mb-1 text-sm font-medium text-slate-700">
-          Determinative reasons (independently sufficient, confirmed by counterfactual replay):
+      <Card
+        title="Trace"
+        subtitle="Counterfactual verification of the record"
+        action={<Badge tone={statusTone(decision.trace.verification_status)}>{decision.trace.verification_status}</Badge>}
+      >
+        <p className="mb-1.5 text-sm font-medium text-slate-700">
+          Determinative reasons (independently sufficient, confirmed by counterfactual replay)
         </p>
         {decision.trace.determinative_reasons.length === 0 ? (
-          <p className="text-sm text-slate-500">none</p>
+          <p className="text-sm text-slate-400">none</p>
         ) : (
-          <ul className="mb-3 list-inside list-disc text-sm">
+          <ul className="mb-3 flex flex-wrap gap-2">
             {decision.trace.determinative_reasons.map((ruleId) => (
-              <li key={ruleId} className="font-mono text-xs">
+              <li key={ruleId} className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                 {ruleId}
               </li>
             ))}
           </ul>
         )}
-        <details className="mt-2">
-          <summary className="cursor-pointer text-xs text-slate-500">
-            counterfactual log ({decision.trace.counterfactual_log.length} probes)
+        <details className="mt-2 group">
+          <summary className="cursor-pointer text-xs font-medium text-slate-500 hover:text-slate-700">
+            Counterfactual log ({decision.trace.counterfactual_log.length} probes)
           </summary>
-          <pre className="mt-2 overflow-x-auto rounded bg-slate-50 p-3 text-xs">
+          <pre className="mt-2 overflow-x-auto rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs text-slate-600">
             {JSON.stringify(decision.trace.counterfactual_log, null, 2)}
           </pre>
         </details>
       </Card>
 
-      <Card title="Justify — the sentence">
-        <p className="mb-3 text-sm">
-          Status: <Badge tone={statusTone(decision.justification.status)}>{decision.justification.status}</Badge>
-        </p>
+      <Card
+        title="Justify"
+        subtitle="Customer-facing sentence generated from the verified record"
+        action={<Badge tone={statusTone(decision.justification.status)}>{decision.justification.status}</Badge>}
+      >
         {decision.justification.sentence && (
-          <>
-            <p className="mb-2 font-medium">{decision.justification.sentence}</p>
+          <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50 p-4">
+            <p className="font-medium text-slate-900">{decision.justification.sentence}</p>
             {decision.justification.boundary_line && (
-              <p className="mb-3 text-sm text-slate-500">{decision.justification.boundary_line}</p>
+              <p className="mt-2 text-sm text-slate-500">{decision.justification.boundary_line}</p>
             )}
-          </>
+          </div>
         )}
-        <p className="text-xs text-slate-500">
-          faithfulness: {decision.justification.faithfulness_check_passed ? "passed" : "FAILED"} · plain
-          language: {decision.justification.plain_language_check_passed ? "passed" : "FAILED"}
-        </p>
+        <div className="flex flex-wrap gap-2">
+          <Badge tone={decision.justification.faithfulness_check_passed ? "good" : "bad"}>
+            Faithfulness {decision.justification.faithfulness_check_passed ? "passed" : "FAILED"}
+          </Badge>
+          <Badge tone={decision.justification.plain_language_check_passed ? "good" : "bad"}>
+            Plain language {decision.justification.plain_language_check_passed ? "passed" : "FAILED"}
+          </Badge>
+        </div>
       </Card>
 
       {pendingReviewItems.length > 0 && (
-        <Card title="Pending review">
-          {pendingReviewItems.map((item) => (
-            <div key={item.id} className="mb-4 last:mb-0">
-              <p className="mb-2 text-sm">
+        <Card title="Pending review" subtitle={`${pendingReviewItems.length} item${pendingReviewItems.length === 1 ? "" : "s"} need human resolution`}>
+          {pendingReviewItems.map((item, i) => (
+            <div key={item.id} className={i > 0 ? "mt-5 border-t border-slate-100 pt-5" : ""}>
+              <p className="mb-3 text-sm">
                 Reason: <Badge tone="warn">{item.reason}</Badge>
               </p>
               <form action={resolveReviewItem.bind(null, item.id, id)} className="space-y-3">
@@ -131,7 +142,7 @@ export default async function DecisionDetailPage({
                   <input
                     name="assigned_to"
                     required
-                    className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
                   />
                 </div>
                 <div>
@@ -140,12 +151,12 @@ export default async function DecisionDetailPage({
                     name="resolution_notes"
                     required
                     rows={3}
-                    className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                    className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
                 >
                   Mark resolved
                 </button>
@@ -155,8 +166,8 @@ export default async function DecisionDetailPage({
         </Card>
       )}
 
-      <Card title="Disclose">
-        <p className="mb-4 text-sm text-slate-500">
+      <Card title="Disclose" subtitle="Deliver the explanation and log it to the ledger">
+        <p className="mb-4 rounded-lg border border-amber-100 bg-amber-50 p-3 text-sm text-amber-900">
           Discipline before you submit this: lead with the answer, own the delay before you give it, and
           don&apos;t let a verified answer to &quot;why&quot; quietly stand in for an answer to a different
           question the customer actually asked (False Clarity).
@@ -164,7 +175,7 @@ export default async function DecisionDetailPage({
         <form action={discloseAction} className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-slate-700">Channel</label>
-            <select name="channel" className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm">
+            <select name="channel" className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm">
               <option value="call">call</option>
               <option value="email">email</option>
               <option value="chat">chat</option>
@@ -175,11 +186,11 @@ export default async function DecisionDetailPage({
             <input
               name="disclosed_by"
               required
-              className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
             />
           </div>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="delay_owned" className="h-4 w-4" />
+          <label className="flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" name="delay_owned" className="h-4 w-4 rounded border-slate-300 text-indigo-600" />
             Delay was owned before giving the answer
           </label>
           <div>
@@ -191,50 +202,44 @@ export default async function DecisionDetailPage({
               name="sentence_override"
               required={decision.justification.status !== "verified"}
               rows={2}
-              className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700">Customer response (optional)</label>
-            <textarea name="customer_response" rows={2} className="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm" />
+            <textarea name="customer_response" rows={2} className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm" />
           </div>
           <button
             type="submit"
-            className="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
           >
             Log disclosure
           </button>
         </form>
       </Card>
 
-      <Card title="Disclosure ledger for this decision">
+      <Card title="Disclosure ledger" subtitle="History for this decision">
         {disclosures.length === 0 ? (
-          <p className="text-sm text-slate-500">Not yet disclosed to anyone.</p>
+          <p className="text-sm text-slate-400">Not yet disclosed to anyone.</p>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Channel</th>
-                <th>By</th>
-                <th>When</th>
-                <th>Sentence sent</th>
-              </tr>
-            </thead>
-            <tbody>
-              {disclosures.map((d) => (
-                <tr key={d.id}>
-                  <td>{d.channel}</td>
-                  <td>{d.disclosed_by}</td>
-                  <td className="text-xs text-slate-500">{new Date(d.disclosed_at).toLocaleString()}</td>
-                  <td>{d.sentence_sent}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ul className="space-y-3">
+            {disclosures.map((d) => (
+              <li key={d.id} className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Badge tone="neutral">{d.channel}</Badge>
+                    <span className="font-medium text-slate-700">{d.disclosed_by}</span>
+                  </div>
+                  <span className="text-xs text-slate-400">{new Date(d.disclosed_at).toLocaleString()}</span>
+                </div>
+                <p className="mt-3 border-l-2 border-slate-200 pl-3 text-sm text-slate-600">{d.sentence_sent}</p>
+              </li>
+            ))}
+          </ul>
         )}
       </Card>
 
-      <Card title="Reopen with new evidence">
+      <Card title="Reopen" subtitle="Re-enter the pipeline with new evidence">
         <p className="mb-4 text-sm text-slate-500">
           New evidence on a decided case (a sharper photo, a corrected field) has to re-enter the
           pipeline, not vanish into a thread. This runs a fresh Decide → Trace → Justify pass and links
@@ -250,12 +255,12 @@ export default async function DecisionDetailPage({
               required
               rows={3}
               placeholder='{"defect_confidence": 0.89}'
-              className="mt-1 w-full rounded border border-slate-300 px-3 py-2 font-mono text-sm"
+              className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm shadow-sm"
             />
           </div>
           <button
             type="submit"
-            className="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
           >
             Reopen
           </button>
